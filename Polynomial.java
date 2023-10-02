@@ -102,32 +102,64 @@ public class Polynomial{
         return this.evaluate(db) == 0; 
     }
 
-    public Polynomial multiply(Polynomial pn){
-        if (pn == null) return null; 
-        Polynomial ret = new Polynomial(); 
+    public Polynomial multiply(Polynomial polynomial2){
 
-        double[] co = {0};
-        int[] exp = {0};
-        Polynomial singleTerm = new Polynomial(co, exp);
+		if (exponents == null && polynomial2.exponents == null){		// if polynomial1 and polynomial2 are null, then return a new empty polynomial
+			return new Polynomial();
+		}
 
-        for (int i = 0; i < this.exponents.length; i++) {
-            singleTerm.coefficients[0] = this.coefficients[i];
-            singleTerm.exponents[0] = this.exponents[i];
-
-            Polynomial temp = new Polynomial();
-            temp.coefficients = new double[pn.coefficients.length];
-            temp.exponents = new int[pn.exponents.length];
-
-            for (int j = 0; j < pn.exponents.length; j++) {
-                temp.coefficients[j] = pn.coefficients[j] * singleTerm.coefficients[0];
-                temp.exponents[j] = pn.exponents[j] + singleTerm.exponents[0];
+		int max_exponent = -1;
+		for (int i = 0; i < this.exponents.length; i++){
+            for (int j = 0; j < polynomial2.exponents.length; j++){
+                max_exponent = Math.max(max_exponent, this.exponents[i] + polynomial2.exponents[j]);
             }
-
-            ret = ret.add(temp);
         }
 
-        return ret; 
-    }
+		max_exponent+=1;
+		double[] temp_coefficients = new double[max_exponent];
+		for (int i = 0; i < max_exponent; i++){
+			temp_coefficients[i] = 0;
+		}
+
+
+		for (int i = 0; i < exponents.length; i++){
+			for (int j = 0; j < polynomial2.exponents.length; j++){
+				temp_coefficients[this.exponents[i] + polynomial2.exponents[j]] += this.coefficients[i] * polynomial2.coefficients[j];
+			}
+		}
+
+		int non_zero_terms = count_non_zero_terms(temp_coefficients);
+
+		double[] result_coefficients = new double[non_zero_terms];
+		int[] result_exponents = new int[non_zero_terms];
+		int index = 0;
+
+		for (int i = 0; i < temp_coefficients.length; i++){
+			if (temp_coefficients[i] != 0){
+				result_coefficients[index] = temp_coefficients[i];
+				result_exponents[index] = i;
+				index+=1;
+			}
+		}
+
+		return new Polynomial(result_coefficients, result_exponents);
+
+
+	}
+
+	private int count_non_zero_terms(double[] coefficients){
+
+		int count = 0;
+
+		for (int i = 0; i < coefficients.length; i++){
+			if (coefficients[i] != 0){
+				count+=1;
+			}
+		}
+
+		return count;
+
+	}
     
     public void saveToFile(String str) throws IOException{
         FileWriter newFileWriter = new FileWriter(str); 
