@@ -103,8 +103,7 @@ public class Polynomial{
     }
 
     public Polynomial multiply(Polynomial polynomial2){
-
-		if (exponents == null && polynomial2.exponents == null){		// if polynomial1 and polynomial2 are null, then return a new empty polynomial
+		if (exponents == null && polynomial2.exponents == null){
 			return new Polynomial();
 		}
 
@@ -120,7 +119,6 @@ public class Polynomial{
 		for (int i = 0; i < max_exponent; i++){
 			temp_coefficients[i] = 0;
 		}
-
 
 		for (int i = 0; i < exponents.length; i++){
 			for (int j = 0; j < polynomial2.exponents.length; j++){
@@ -141,14 +139,9 @@ public class Polynomial{
 				index+=1;
 			}
 		}
-
 		return new Polynomial(result_coefficients, result_exponents);
-
-
 	}
-
 	private int count_non_zero_terms(double[] coefficients){
-
 		int count = 0;
 
 		for (int i = 0; i < coefficients.length; i++){
@@ -156,11 +149,8 @@ public class Polynomial{
 				count+=1;
 			}
 		}
-
 		return count;
-
 	}
-    
     public void saveToFile(String str) throws IOException{
         FileWriter newFileWriter = new FileWriter(str); 
         for (int i = 0; i < coefficients.length; i++){
